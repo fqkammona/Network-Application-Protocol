@@ -1,38 +1,32 @@
 import socket
 
 def main():
-    # Set the server's port number
-    serverPort = 12000  
+    serverPort = 12000
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serverSocket:
+            serverSocket.bind(('', serverPort))
+            serverSocket.listen(1)
+            print(f"The server is ready to receive on port {serverPort}")
 
-    # Create a TCP/IP socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serverSocket:
-        # Bind the socket to the port
-        serverSocket.bind(('', serverPort))
-        
-        # Listen for incoming connections
-        serverSocket.listen(1)
-        print(f"The server is ready to receive on port {serverPort}")
-        
-        # Keep the server running forever
-        while True:
-            # Wait for a connection
-            connectionSocket, addr = serverSocket.accept()
-            
-            # Receive data from the client
-            message = connectionSocket.recv(1024).decode()
-            print(f"Received from {addr}: {message}")
+            while True:
+                connectionSocket, addr = serverSocket.accept()
+                print(f"Connection established with {addr}")
 
-            if message == "quit":
-                print("Server received termination signal. Closing connection.")
+                while True:
+                    message = connectionSocket.recv(1024).decode()
+                    if not message or message.lower() == "quit":
+                        print(f"Connection with {addr} closed.")
+                        break
+
+                    print(f"Received from {addr}: {message}")
+                    response = f"Server received: {message}"
+                    connectionSocket.send(response.encode())
+
                 connectionSocket.close()
-                break
-            else:
-                # Send a response back to the client
-                response = f"Message received: {message}"
-                connectionSocket.send(response.encode())
-            
-            # Close the connection
-            connectionSocket.close()
 
+    # When Control C is entered the server completely shuts down
+    except KeyboardInterrupt:
+        print("\nServer is shutting down.")
+    
 if __name__ == "__main__":
     main()
