@@ -12,6 +12,25 @@ def main():
                 connectionSocket, addr = serverSocket.accept()
                 print(f"Connection established with {addr}")
 
+                # Server-side handshaking
+                client_handshake = connectionSocket.recv(1024).decode()
+                if client_handshake == "HELLO_SERVER":
+                    print(f"Handshake initiated by {addr}")
+                    connectionSocket.send("HELLO_CLIENT".encode())
+
+                    # Wait for client's final acknowledgment
+                    client_ack = connectionSocket.recv(1024).decode()
+                    if client_ack == "CLIENT_ACK":
+                        print(f"Handshake completed with {addr}")
+                    else:
+                        print(f"Handshake failed with {addr}")
+                        connectionSocket.close()
+                        continue
+                else:
+                    print(f"Unexpected message from {addr}, handshake failed.")
+                    connectionSocket.close()
+                    continue
+
                 while True:
                     message = connectionSocket.recv(1024).decode()
                     if not message or message.lower() == "quit":
