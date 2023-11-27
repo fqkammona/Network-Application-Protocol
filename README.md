@@ -27,13 +27,15 @@ Before installing and running the application, ensure you have Python 3.x instal
 
 1. Start the Server - Open a terminal window and run the server application
 
-`python server.py`
+`python server.py <ServerPort>`
 
-2. Launch the Client Application - Open another terminal window and start the client application
+Replace <ServerPort> with the port number (default is 12000 if not specified)
+
+2. Launch the Client Application - Open another terminal window and start the client applicatio
 
 `python client.py <ServerName> <ServerPort>`
 
-Replace <ServerName> with the hostname or IP address of the server and <ServerPort> with the port number (default is 12000 if not specified)
+Replace <ServerName> with the hostname or IP address of the server and <ServerPort> with the port number 
 
 3. Communicate via the Client - Once connected, you can type messages in the client window. These messages will be sent to the server, which will echo them back.
 
